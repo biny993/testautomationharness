@@ -6,6 +6,7 @@ hostname="controller-0"
 
 function prepare()
 {
+mkdir -p ~/testsuite
 # For AIO SX only, need update with affinity to controller-0?
 cat <<EOF > ~/testsuite/stress-cpu.yaml
 apiVersion: v1
