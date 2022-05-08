@@ -12,7 +12,7 @@ vthInput:
 
   vth_runscripts1:
     vthInput:
-        testData: {command: './stress-cpu-test.sh start;./stress-cpu-test.sh status;'}
+        testData: {command: './stress-cpu-test.sh start;./stress-cpu-test.sh status;sleep 5m;'}
         vthName: ""
         testConfig: {jumpServer: {host: 128.224.167.98, credentials: {username: sysadmin, password: 'Li69nux*'}}}
 

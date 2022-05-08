@@ -29,9 +29,11 @@ function start()
         prepare
         kubectl apply -f ~/testsuite/stress-cpu.yaml -n kube-system
         if [ "$?" == 0 ]; then
-        echo "status:pass"
+            # sleep for 5 minutes
+            # sleep 5m
+            echo "status:pass"
         else
-        echo "status:fail"
+            echo "status:fail"
         fi
     else
         echo "status:pass"
@@ -45,9 +47,9 @@ function stop()
     if [ "$?" == 0 ]; then
         kubectl delete -f ~/testsuite/stress-cpu.yaml -n kube-system
         if [ "$?" == 0 ]; then
-        echo "status:pass"
+            echo "status:pass"
         else
-        echo "status:fail"
+            echo "status:fail"
         fi
     else
         echo "status:pass"
@@ -82,7 +84,7 @@ function status()
     kubectl -n kube-system get pod stress-ng-cpu
     if [ "$?" == 0 ]; then
         kubectl -n kube-system get pod stress-ng-cpu -o wide
-        kubectl -n kube-system describe pod stress-ng-cpu
+        # kubectl -n kube-system describe pod stress-ng-cpu
         source /etc/platform/openrc
         fm alarm-list
         # echo "status:pass"
@@ -98,7 +100,9 @@ function asserted()
     if [ "$?" == 0 ]; then
         source /etc/platform/openrc
         # fm alarm-list | grep "host=${hostname}" | grep "Platform CPU threshold exceeded"
-        fm alarm-list | grep "Platform CPU threshold exceeded"
+        # fm alarm-list output format is affected by stty column width, which is 80 by default
+        stty cols 120
+        fm alarm-list | grep "100.101"
         if [ "$?" == 0 ]; then
             echo "status:pass"
         else
@@ -107,7 +111,6 @@ function asserted()
     else
         echo "status:fail"
     fi
-
 }
 
 function usage()
