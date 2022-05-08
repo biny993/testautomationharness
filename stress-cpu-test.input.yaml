@@ -1,0 +1,29 @@
+vthInput:
+  vth_pingtarget1:
+    vthInput:
+        testData: {targetHost: 128.224.167.98, useJumpServer: false}
+        vthName: ""
+        testConfig: {jumpserver: {host: "", credentials: {username: "", password: ""}}}
+  vth_loadscripts1:
+    vthInput:
+        testData: {command: 'curl https://raw.githubusercontent.com/biny993/testautomationharness/main/stress-cpu-test.sh -o stress-cpu-test.sh;chmod +x ./stress-cpu-test.sh;echo "status:pass"'}
+        vthName: loadscript1
+        testConfig: {jumpServer: {host: 128.224.167.98, credentials: {username: sysadmin, password: 'Li69nux*'}}}
+
+  vth_runscripts1:
+    vthInput:
+        testData: {command: './stress-cpu-test.sh start;./stress-cpu-test.sh status;'}
+        vthName: ""
+        testConfig: {jumpServer: {host: 128.224.167.98, credentials: {username: sysadmin, password: 'Li69nux*'}}}
+
+  vth_stopscripts1:
+    vthInput:
+        testData: {command: './stress-cpu-test.sh stop;./stress-cpu-test.sh stopped;'}
+        vthName: ""
+        testConfig: {jumpServer: {host: 128.224.167.98, credentials: {username: sysadmin, password: 'Li69nux*'}}}
+
+  vth_check_testasserted:
+    vthInput:
+        testData: {command: './stress-cpu-test.sh status;./stress-cpu-test.sh asserted;'}
+        vthName: ""
+        testConfig: {jumpServer: {host: 128.224.167.98, credentials: {username: sysadmin, password: 'Li69nux*'}}}

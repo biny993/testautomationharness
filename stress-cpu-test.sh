@@ -85,9 +85,9 @@ function status()
         kubectl -n kube-system describe pod stress-ng-cpu
         source /etc/platform/openrc
         fm alarm-list
-        echo "status:pass"
-    else
-        echo "status:fail"
+        # echo "status:pass"
+    # else
+        # echo "status:fail"
     fi
 }
 
@@ -100,12 +100,12 @@ function asserted()
         # fm alarm-list | grep "host=${hostname}" | grep "Platform CPU threshold exceeded"
         fm alarm-list | grep "Platform CPU threshold exceeded"
         if [ "$?" == 0 ]; then
-        echo "status:pass"
+            echo "status:pass"
         else
-        echo "status:fail"
+            echo "status:fail"
         fi
     else
-        echo "status:pending"
+        echo "status:fail"
     fi
 
 }
