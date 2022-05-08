@@ -4,7 +4,7 @@ var testData = execution.getVariable("testData")
 var vthInput = execution.getVariable("vthInput")
 var ocloudreachable = false;
 
-var testResultMessage = "target system is reachable."
+var testResultMessage = "target system ping result: pass"
 
 try {
   //get output from vthid_hostlistcheck call
@@ -25,12 +25,12 @@ try {
   }
   else{
     alreadyDeployed = false
-    testResultMessage = "target system is not reachable."
+    testResultMessage = "target system ping result: fail"
   }
 }
 catch(err) {
   ocloudreachable = false
-  testResultMessage = "Couldn't verify is target system is reachable. error:"+ err
+  testResultMessage = "Couldn't verify target system ping result. error:"+ err
 }
 
 execution.setVariable("ocloudreachable", ocloudreachable);

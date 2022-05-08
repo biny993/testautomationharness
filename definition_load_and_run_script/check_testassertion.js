@@ -4,7 +4,7 @@ var testData = execution.getVariable("testData")
 var vthInput = execution.getVariable("vthInput")
 var testscripts_asserted = false;
 
-var testResultMessage = "test scripts result: pass."
+var testResultMessage = "test scripts assertion result: pass."
 
 try {
   //get output from vthid_hostlistcheck call
@@ -25,12 +25,12 @@ try {
   }
   else{
     testscripts_asserted = false
-    testResultMessage = "test scripts result: " + testscripts_asserted
+    testResultMessage = "test scripts assertion result: fail"
   }
 }
 catch(err) {
   testscripts_asserted = false
-  testResultMessage = "Couldn't verify if test scripts status. error:"+ err
+  testResultMessage = "Couldn't verify if test scripts assertion result. error:"+ err
 }
 
 execution.setVariable("testscripts_asserted", testscripts_asserted);

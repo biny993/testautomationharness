@@ -4,7 +4,7 @@ var testData = execution.getVariable("testData")
 var vthInput = execution.getVariable("vthInput")
 var testscripts_status = "unknown";
 
-var testResultMessage = "test scripts result: pass."
+var testResultMessage = "test scripts start result: pass."
 
 try {
   //get output from vthid_hostlistcheck call
@@ -25,12 +25,12 @@ try {
   }
   else{
     testscripts_status = false
-    testResultMessage = "test scripts result: " + testscripts_status
+    testResultMessage = "test scripts start result: " + testscripts_status
   }
 }
 catch(err) {
   testscripts_status = "error"
-  testResultMessage = "Couldn't verify if test scripts status. error:"+ err
+  testResultMessage = "Couldn't verify test scripts start result. error:"+ err
 }
 
 execution.setVariable("testscripts_status", testscripts_status);

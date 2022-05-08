@@ -4,7 +4,7 @@ var testData = execution.getVariable("testData")
 var vthInput = execution.getVariable("vthInput")
 var testscripts_ready = false;
 
-var testResultMessage = "test scripts are loaded and ready to run."
+var testResultMessage = "test scripts load result: pass"
 
 try {
   //get output from vthid_hostlistcheck call
@@ -25,12 +25,12 @@ try {
   }
   else{
     testscripts_ready = false
-    testResultMessage = "test scripts are not loaded appropriately."
+    testResultMessage = "test scripts load result: fail."
   }
 }
 catch(err) {
   testscripts_ready = false
-  testResultMessage = "Couldn't verify if test scripts are ready. error:"+ err
+  testResultMessage = "Couldn't verify test scripts load result. error:"+ err
 }
 
 execution.setVariable("testscripts_ready", testscripts_ready);
