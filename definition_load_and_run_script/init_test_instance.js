@@ -13,12 +13,12 @@ var testResultMessage = "initiate test instance's variables"
 
 try {
         
-    //init testRetryMax
-    var testRetryMax = execution.getVariable("testRetryMax")
-    if (!testRetryMax)
+    //init testscripts_retry
+    var testscripts_retry = execution.getVariable("testscripts_retry")
+    if (!testscripts_retry)
     {
-        testRetryMax = 0
-        execution.setVariable("testRetryMax", testRetryMax)
+      testscripts_retry = 5
+      execution.setVariable("testscripts_retry", testscripts_retry)
     }
 
     execution.setVariable("ocloudreachable", false)

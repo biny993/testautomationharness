@@ -10,7 +10,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1j5gekn" sourceRef="vth_pingtarget1" targetRef="js_check_pingtarget" />
     <bpmn:sequenceFlow id="SequenceFlow_0tdip83" sourceRef="IntermediateThrowEvent_1eags5i" targetRef="ExclusiveGateway_0yr4a5k" />
-    <bpmn:sequenceFlow id="SequenceFlow_1epkmeo" name="ocloud not ready" sourceRef="ExclusiveGateway_0yr4a5k" targetRef="Task_1ax8g5h" />
+    <bpmn:sequenceFlow id="SequenceFlow_1epkmeo" name="ocloud not ready" sourceRef="ExclusiveGateway_0yr4a5k" targetRef="js_fail" />
     <bpmn:sequenceFlow id="SequenceFlow_0m4fq2v" name="ocloud ready" sourceRef="ExclusiveGateway_0yr4a5k" targetRef="vth_loadscripts1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${ocloudreachable==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -21,22 +21,40 @@
     <bpmn:sequenceFlow id="SequenceFlow_0esbj6o" name="script ready" sourceRef="ExclusiveGateway_1it8v2n" targetRef="vth_runscripts1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testscripts_ready==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_1bjg0uh" name="script not ready" sourceRef="ExclusiveGateway_1it8v2n" targetRef="Task_1ax8g5h" />
+    <bpmn:sequenceFlow id="SequenceFlow_1bjg0uh" name="script not ready" sourceRef="ExclusiveGateway_1it8v2n" targetRef="js_fail" />
     <bpmn:sequenceFlow id="SequenceFlow_0km3cmt" sourceRef="Task_1ax8g5h" targetRef="EndEvent_0adf5lz" />
     <bpmn:sequenceFlow id="SequenceFlow_0gf3bwf" sourceRef="vth_runscripts1" targetRef="IntermediateThrowEvent_1ka44wh" />
     <bpmn:sequenceFlow id="SequenceFlow_0vqwnqy" sourceRef="IntermediateThrowEvent_1ka44wh" targetRef="js_checkscriptresult1" />
     <bpmn:sequenceFlow id="SequenceFlow_1bi1blr" sourceRef="js_checkscriptresult1" targetRef="ExclusiveGateway_0qzhu6l" />
-    <bpmn:sequenceFlow id="SequenceFlow_0v9kpoo" name="passed" sourceRef="ExclusiveGateway_0qzhu6l" targetRef="vth_stopscripts1">
+    <bpmn:sequenceFlow id="SequenceFlow_0v9kpoo" name="passed" sourceRef="ExclusiveGateway_0qzhu6l" targetRef="vth_check_testasserted">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testscripts_status=="pass"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_06vxj04" name="failed" sourceRef="ExclusiveGateway_0qzhu6l" targetRef="ExclusiveGateway_0nxrdng" />
-    <bpmn:sequenceFlow id="SequenceFlow_110poas" name="no more retry" sourceRef="ExclusiveGateway_0nxrdng" targetRef="vth_stopscripts1" />
+    <bpmn:sequenceFlow id="SequenceFlow_110poas" name="no more retry" sourceRef="ExclusiveGateway_0nxrdng" targetRef="ScriptTask_0t2hs0u" />
     <bpmn:sequenceFlow id="SequenceFlow_0hhwwid" name="retry" sourceRef="ExclusiveGateway_0nxrdng" targetRef="timer_retry_delay_duration1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testscripts_retry&gt;0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_08qksg2" sourceRef="timer_retry_delay_duration1" targetRef="vth_runscripts1" />
     <bpmn:sequenceFlow id="SequenceFlow_1n4368s" sourceRef="js_init" targetRef="ExclusiveGateway_19q5v7m" />
-    <bpmn:sequenceFlow id="SequenceFlow_1pv86q1" sourceRef="ExclusiveGateway_19q5v7m" targetRef="Task_1ax8g5h" />
+    <bpmn:sequenceFlow id="SequenceFlow_1pv86q1" sourceRef="ExclusiveGateway_19q5v7m" targetRef="js_fail" />
+    <bpmn:sequenceFlow id="SequenceFlow_00imoli" sourceRef="vth_stopscripts1" targetRef="Task_1ax8g5h" />
+    <bpmn:sequenceFlow id="SequenceFlow_05kxvlg" sourceRef="js_fail" targetRef="Task_1ax8g5h" />
+    <bpmn:sequenceFlow id="SequenceFlow_00avc3c" name="retry" sourceRef="ExclusiveGateway_1wrnf6h" targetRef="IntermediateThrowEvent_0a56c4y">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testscripts_retry&gt;0}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1jkrcmp" sourceRef="vth_check_testasserted" targetRef="js_check_assertion" />
+    <bpmn:sequenceFlow id="SequenceFlow_04c27ym" sourceRef="ExclusiveGateway_1wrnf6h" targetRef="ScriptTask_15hihpp" />
+    <bpmn:sequenceFlow id="SequenceFlow_04z3dbw" sourceRef="js_check_assertion" targetRef="ExclusiveGateway_1m8bs9k" />
+    <bpmn:sequenceFlow id="SequenceFlow_16g3zuj" sourceRef="ExclusiveGateway_1m8bs9k" targetRef="ExclusiveGateway_1wrnf6h" />
+    <bpmn:sequenceFlow id="SequenceFlow_0l0j82u" name="passed" sourceRef="ExclusiveGateway_1m8bs9k" targetRef="js_update_workflowstatus">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testscripts_asserted==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0dvxh1a" sourceRef="js_update_workflowstatus" targetRef="vth_stopscripts1" />
+    <bpmn:sequenceFlow id="SequenceFlow_02scklj" sourceRef="ScriptTask_0t2hs0u" targetRef="vth_stopscripts1" />
+    <bpmn:sequenceFlow id="SequenceFlow_01s6iru" sourceRef="ScriptTask_15hihpp" targetRef="vth_stopscripts1" />
+    <bpmn:sequenceFlow id="SequenceFlow_14ryhvf" sourceRef="IntermediateThrowEvent_0a56c4y" targetRef="Task_0brz3m4" />
+    <bpmn:sequenceFlow id="SequenceFlow_08gmgbn" sourceRef="Task_0brz3m4" targetRef="vth_check_testasserted" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ncdq3q" sourceRef="timer_retry_delay_duration1" targetRef="ScriptTask_01vwtsy" />
+    <bpmn:sequenceFlow id="SequenceFlow_1dp164f" sourceRef="ScriptTask_01vwtsy" targetRef="vth_runscripts1" />
     <bpmn:scriptTask id="js_init" name="init" scriptFormat="javascript">
       <bpmn:incoming>SequenceFlow_1nd08el</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1n4368s</bpmn:outgoing>
@@ -55,12 +73,12 @@ var testResultMessage = "initiate test instance's variables"
 
 try {
         
-    //init testRetryMax
-    var testRetryMax = execution.getVariable("testRetryMax")
-    if (!testRetryMax)
+    //init testscripts_retry
+    var testscripts_retry = execution.getVariable("testscripts_retry")
+    if (!testscripts_retry)
     {
-        testRetryMax = 0
-        execution.setVariable("testRetryMax", testRetryMax)
+      testscripts_retry = 5
+      execution.setVariable("testscripts_retry", testscripts_retry)
     }
 
     execution.setVariable("ocloudreachable", false)
@@ -124,7 +142,8 @@ catch(err) {
 }
 
 execution.setVariable("testinstance_init", testinstance_init);
-execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
+execution.setVariable("testResultMessage", testResultMessage);
+</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:scriptTask id="js_check_pingtarget" name="check ping result" scriptFormat="javascript">
       <bpmn:incoming>SequenceFlow_1j5gekn</bpmn:incoming>
@@ -249,7 +268,84 @@ catch(err) {
 execution.setVariable("testscripts_status", testscripts_status);
 execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0yr4a5k" name="ocloud ready" default="SequenceFlow_1epkmeo">
+    <bpmn:scriptTask id="js_fail" name="set fail result" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_1bjg0uh</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1epkmeo</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1pv86q1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05kxvlg</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("TestResult", "Failed");</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="js_check_assertion" name="check assertion" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_1jkrcmp</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_04z3dbw</bpmn:outgoing>
+      <bpmn:script>var System = java.lang.System
+var vthid_check_testasserted = 'vth_check_testasserted'
+var testData = execution.getVariable("testData")
+var vthInput = execution.getVariable("vthInput")
+var testscripts_asserted = false;
+
+var testResultMessage = "test scripts result: pass."
+
+try {
+  //get output from vthid_hostlistcheck call
+  var testExecution = execution.getVariable('otf-execution-testExecution');
+  var data = null;
+  testExecution.testHeadResults.forEach(function(item, index, array) {
+    if(item.bpmnVthTaskId == vthid_check_testasserted ){
+      var statusCode = item['statusCode']
+      if(statusCode != 200){
+        throw "VTH ssh fails with statusCode:" + statusCode
+      }
+      data = item['testHeadResponse']['vthResponse']['resultData']['output'];
+    }
+  })
+
+  if (data.indexOf("status:pass")!=-1){
+    testscripts_asserted = true
+  }
+  else{
+    testscripts_asserted = false
+    testResultMessage = "test scripts result: " + testscripts_asserted
+  }
+}
+catch(err) {
+  testscripts_asserted = false
+  testResultMessage = "Couldn't verify if test scripts status. error:"+ err
+}
+
+execution.setVariable("testscripts_asserted", testscripts_asserted);
+execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="js_update_workflowstatus" name="set success result" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_0l0j82u</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0dvxh1a</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("TestResult", "Success");</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="ScriptTask_0t2hs0u" name="set fail result" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_110poas</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_02scklj</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("TestResult", "Failed");</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="ScriptTask_15hihpp" name="set fail result" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_04c27ym</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_01s6iru</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("TestResult", "Failed");</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_0brz3m4" name="Decrease retry" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_14ryhvf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_08gmgbn</bpmn:outgoing>
+      <bpmn:script>testscripts_retry=execution.getVariable("testscripts_retry")
+testscripts_retry=testscripts_retry-1
+execution.setVariable("testscripts_retry", testscripts_retry);</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="ScriptTask_01vwtsy" name="Decrease retry" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_1ncdq3q</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1dp164f</bpmn:outgoing>
+      <bpmn:script>testscripts_retry=execution.getVariable("testscripts_retry")
+testscripts_retry=testscripts_retry-1
+execution.setVariable("testscripts_retry", testscripts_retry);</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0yr4a5k" name="ping result" default="SequenceFlow_1epkmeo">
       <bpmn:incoming>SequenceFlow_0tdip83</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1epkmeo</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0m4fq2v</bpmn:outgoing>
@@ -259,7 +355,7 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
       <bpmn:outgoing>SequenceFlow_0esbj6o</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1bjg0uh</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0qzhu6l" name="test passed" default="SequenceFlow_06vxj04">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0qzhu6l" name="test result" default="SequenceFlow_06vxj04">
       <bpmn:incoming>SequenceFlow_1bi1blr</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0v9kpoo</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_06vxj04</bpmn:outgoing>
@@ -273,6 +369,16 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
       <bpmn:incoming>SequenceFlow_1n4368s</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_05dvsmb</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1pv86q1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1wrnf6h" name="retry maximum" default="SequenceFlow_04c27ym">
+      <bpmn:incoming>SequenceFlow_16g3zuj</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_00avc3c</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_04c27ym</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1m8bs9k" default="SequenceFlow_16g3zuj">
+      <bpmn:incoming>SequenceFlow_04z3dbw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_16g3zuj</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0l0j82u</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1eags5i">
       <bpmn:incoming>SequenceFlow_1no3rr6</bpmn:incoming>
@@ -297,7 +403,14 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="timer_retry_delay_duration1" name="delay then retry">
       <bpmn:incoming>SequenceFlow_0hhwwid</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_08qksg2</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1ncdq3q</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0a56c4y">
+      <bpmn:incoming>SequenceFlow_00avc3c</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_14ryhvf</bpmn:outgoing>
       <bpmn:timerEventDefinition>
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
@@ -310,10 +423,8 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
       <bpmn:outgoing>SequenceFlow_1j5gekn</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Task_1ax8g5h" name="UTIL:logTestResult" camunda:delegateExpression="${logTestResultDelegate}">
-      <bpmn:incoming>SequenceFlow_1epkmeo</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_1bjg0uh</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_1pv86q1</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_023mkor</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_05kxvlg</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_00imoli</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0km3cmt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="vth_loadscripts1" name="VTH:ssh:loadscripts" camunda:delegateExpression="${callTestHeadDelegate}">
@@ -322,15 +433,20 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="vth_runscripts1" name="VTH:ssh:runscripts" camunda:delegateExpression="${callTestHeadDelegate}">
       <bpmn:incoming>SequenceFlow_0esbj6o</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_08qksg2</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1dp164f</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0gf3bwf</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:task id="vth_stopscripts1" name="VTH:ssh:stopscripts">
-      <bpmn:incoming>SequenceFlow_110poas</bpmn:incoming>
+    <bpmn:serviceTask id="vth_stopscripts1" name="VTH:ssh:stopscripts" camunda:delegateExpression="${callTestHeadDelegate}">
+      <bpmn:incoming>SequenceFlow_02scklj</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_01s6iru</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0dvxh1a</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_00imoli</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="vth_check_testasserted" name="VTH:ssh:checkasserted" camunda:delegateExpression="${callTestHeadDelegate}">
       <bpmn:incoming>SequenceFlow_0v9kpoo</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_023mkor</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_023mkor" sourceRef="vth_stopscripts1" targetRef="Task_1ax8g5h" />
+      <bpmn:incoming>SequenceFlow_08gmgbn</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jkrcmp</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="load_and_run_script1">
@@ -349,11 +465,11 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
       <bpmndi:BPMNShape id="ExclusiveGateway_0yr4a5k_di" bpmnElement="ExclusiveGateway_0yr4a5k" isMarkerVisible="true">
         <dc:Bounds x="737" y="260" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="797" y="278" width="64" height="14" />
+          <dc:Bounds x="817" y="275" width="51" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_1ax8g5h_di" bpmnElement="Task_1ax8g5h">
-        <dc:Bounds x="712" y="375" width="100" height="80" />
+        <dc:Bounds x="887" y="593" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_1gaszfb_di" bpmnElement="vth_loadscripts1">
         <dc:Bounds x="530" y="245" width="100" height="80" />
@@ -374,33 +490,33 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_024fi2o_di" bpmnElement="vth_runscripts1">
-        <dc:Bounds x="168" y="494" width="100" height="80" />
+        <dc:Bounds x="168" y="544" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0adf5lz_di" bpmnElement="EndEvent_0adf5lz">
-        <dc:Bounds x="863" y="397" width="36" height="36" />
+        <dc:Bounds x="1076" y="615" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_0b7aq8y_di" bpmnElement="IntermediateThrowEvent_1ka44wh">
-        <dc:Bounds x="318" y="516" width="36" height="36" />
+        <dc:Bounds x="309" y="566" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ScriptTask_0kwa6s7_di" bpmnElement="js_checkscriptresult1">
-        <dc:Bounds x="404" y="494" width="100" height="80" />
+        <dc:Bounds x="404" y="544" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0qzhu6l_di" bpmnElement="ExclusiveGateway_0qzhu6l" isMarkerVisible="true">
-        <dc:Bounds x="554" y="509" width="50" height="50" />
+        <dc:Bounds x="429" y="668" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="550" y="485" width="58" height="14" />
+          <dc:Bounds x="369.5" y="686" width="49" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0nxrdng_di" bpmnElement="ExclusiveGateway_0nxrdng" isMarkerVisible="true">
-        <dc:Bounds x="554" y="658" width="50" height="50" />
+        <dc:Bounds x="429" y="773" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="613.5" y="676" width="71" height="14" />
+          <dc:Bounds x="366" y="771" width="71" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_0kx5d8u_di" bpmnElement="timer_retry_delay_duration1">
-        <dc:Bounds x="200" y="665" width="36" height="36" />
+        <dc:Bounds x="200" y="780" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="180" y="708" width="77" height="14" />
+          <dc:Bounds x="180" y="823" width="77" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_19q5v7m_di" bpmnElement="ExclusiveGateway_19q5v7m" isMarkerVisible="true">
@@ -408,6 +524,45 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
         <bpmndi:BPMNLabel>
           <dc:Bounds x="432" y="-74" width="45" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0ojf5ku_di" bpmnElement="vth_stopscripts1">
+        <dc:Bounds x="887" y="950" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_17ju1o8_di" bpmnElement="js_fail">
+        <dc:Bounds x="841" y="375" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1i9qdog_di" bpmnElement="vth_check_testasserted">
+        <dc:Bounds x="564" y="653" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_1qv5cnk_di" bpmnElement="js_check_assertion">
+        <dc:Bounds x="564" y="758" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1wrnf6h_di" bpmnElement="ExclusiveGateway_1wrnf6h" isMarkerVisible="true">
+        <dc:Bounds x="788" y="773" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="848" y="791" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1dpdvnf_di" bpmnElement="IntermediateThrowEvent_0a56c4y">
+        <dc:Bounds x="795" y="675" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1m8bs9k_di" bpmnElement="ExclusiveGateway_1m8bs9k" isMarkerVisible="true">
+        <dc:Bounds x="697" y="773" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0xn0ngl_di" bpmnElement="js_update_workflowstatus">
+        <dc:Bounds x="887" y="1113" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0t2hs0u_di" bpmnElement="ScriptTask_0t2hs0u">
+        <dc:Bounds x="404" y="950" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_15hihpp_di" bpmnElement="ScriptTask_15hihpp">
+        <dc:Bounds x="763" y="859" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0d0olb8_di" bpmnElement="Task_0brz3m4">
+        <dc:Bounds x="763" y="544" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_01vwtsy_di" bpmnElement="ScriptTask_01vwtsy">
+        <dc:Bounds x="168" y="665" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1nd08el_di" bpmnElement="SequenceFlow_1nd08el">
         <di:waypoint x="247" y="-19" />
@@ -430,9 +585,10 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1epkmeo_di" bpmnElement="SequenceFlow_1epkmeo">
         <di:waypoint x="762" y="310" />
-        <di:waypoint x="762" y="375" />
+        <di:waypoint x="762" y="404" />
+        <di:waypoint x="841" y="404" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="737" y="338" width="82" height="14" />
+          <dc:Bounds x="764" y="381" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0m4fq2v_di" bpmnElement="SequenceFlow_0m4fq2v">
@@ -460,84 +616,142 @@ execution.setVariable("testResultMessage", testResultMessage);</bpmn:script>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0esbj6o_di" bpmnElement="SequenceFlow_0esbj6o">
         <di:waypoint x="218" y="440" />
-        <di:waypoint x="218" y="494" />
+        <di:waypoint x="218" y="544" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="200" y="474" width="59" height="14" />
+          <dc:Bounds x="200" y="512" width="59" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1bjg0uh_di" bpmnElement="SequenceFlow_1bjg0uh">
         <di:waypoint x="243" y="415" />
-        <di:waypoint x="712" y="415" />
+        <di:waypoint x="841" y="415" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="241" y="393" width="77" height="14" />
+          <dc:Bounds x="533" y="413" width="77" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0km3cmt_di" bpmnElement="SequenceFlow_0km3cmt">
-        <di:waypoint x="812" y="415" />
-        <di:waypoint x="863" y="415" />
+        <di:waypoint x="987" y="633" />
+        <di:waypoint x="1076" y="633" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0gf3bwf_di" bpmnElement="SequenceFlow_0gf3bwf">
-        <di:waypoint x="268" y="534" />
-        <di:waypoint x="318" y="534" />
+        <di:waypoint x="268" y="584" />
+        <di:waypoint x="309" y="584" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0vqwnqy_di" bpmnElement="SequenceFlow_0vqwnqy">
-        <di:waypoint x="354" y="534" />
-        <di:waypoint x="404" y="534" />
+        <di:waypoint x="345" y="584" />
+        <di:waypoint x="404" y="584" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1bi1blr_di" bpmnElement="SequenceFlow_1bi1blr">
-        <di:waypoint x="504" y="534" />
-        <di:waypoint x="554" y="534" />
+        <di:waypoint x="454" y="624" />
+        <di:waypoint x="454" y="668" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0v9kpoo_di" bpmnElement="SequenceFlow_0v9kpoo">
-        <di:waypoint x="604" y="534" />
-        <di:waypoint x="678" y="534" />
-        <di:waypoint x="678" y="739" />
+        <di:waypoint x="479" y="693" />
+        <di:waypoint x="564" y="693" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="658" y="561" width="37" height="14" />
+          <dc:Bounds x="503" y="675" width="37" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_06vxj04_di" bpmnElement="SequenceFlow_06vxj04">
-        <di:waypoint x="579" y="559" />
-        <di:waypoint x="579" y="658" />
+        <di:waypoint x="454" y="718" />
+        <di:waypoint x="454" y="773" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="578" y="610" width="27" height="14" />
+          <dc:Bounds x="453" y="732" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_110poas_di" bpmnElement="SequenceFlow_110poas">
-        <di:waypoint x="579" y="708" />
-        <di:waypoint x="579" y="779" />
-        <di:waypoint x="628" y="779" />
+        <di:waypoint x="454" y="823" />
+        <di:waypoint x="454" y="950" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="531" y="732" width="66" height="14" />
+          <dc:Bounds x="381" y="842" width="66" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0hhwwid_di" bpmnElement="SequenceFlow_0hhwwid">
-        <di:waypoint x="554" y="683" />
-        <di:waypoint x="236" y="683" />
+        <di:waypoint x="429" y="798" />
+        <di:waypoint x="236" y="798" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="369" y="661" width="24" height="14" />
+          <dc:Bounds x="321" y="780" width="24" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_08qksg2_di" bpmnElement="SequenceFlow_08qksg2">
-        <di:waypoint x="218" y="665" />
-        <di:waypoint x="218" y="574" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1n4368s_di" bpmnElement="SequenceFlow_1n4368s">
         <di:waypoint x="386" y="-19" />
         <di:waypoint x="429" y="-19" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1pv86q1_di" bpmnElement="SequenceFlow_1pv86q1">
-        <di:waypoint x="454" y="-19" />
-        <di:waypoint x="762" y="-19" />
-        <di:waypoint x="762" y="375" />
+        <di:waypoint x="479" y="-19" />
+        <di:waypoint x="910" y="-19" />
+        <di:waypoint x="910" y="375" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_0ojf5ku_di" bpmnElement="vth_stopscripts1">
-        <dc:Bounds x="628" y="739" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_023mkor_di" bpmnElement="SequenceFlow_023mkor">
-        <di:waypoint x="728" y="779" />
-        <di:waypoint x="762" y="779" />
-        <di:waypoint x="762" y="455" />
+      <bpmndi:BPMNEdge id="SequenceFlow_00imoli_di" bpmnElement="SequenceFlow_00imoli">
+        <di:waypoint x="937" y="950" />
+        <di:waypoint x="937" y="812" />
+        <di:waypoint x="926" y="812" />
+        <di:waypoint x="926" y="673" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_05kxvlg_di" bpmnElement="SequenceFlow_05kxvlg">
+        <di:waypoint x="937" y="453" />
+        <di:waypoint x="937" y="593" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_00avc3c_di" bpmnElement="SequenceFlow_00avc3c">
+        <di:waypoint x="813" y="773" />
+        <di:waypoint x="813" y="711" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="816" y="731" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jkrcmp_di" bpmnElement="SequenceFlow_1jkrcmp">
+        <di:waypoint x="614" y="733" />
+        <di:waypoint x="614" y="758" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_04c27ym_di" bpmnElement="SequenceFlow_04c27ym">
+        <di:waypoint x="813" y="823" />
+        <di:waypoint x="813" y="859" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_04z3dbw_di" bpmnElement="SequenceFlow_04z3dbw">
+        <di:waypoint x="664" y="798" />
+        <di:waypoint x="697" y="798" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_16g3zuj_di" bpmnElement="SequenceFlow_16g3zuj">
+        <di:waypoint x="747" y="798" />
+        <di:waypoint x="788" y="798" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0l0j82u_di" bpmnElement="SequenceFlow_0l0j82u">
+        <di:waypoint x="722" y="823" />
+        <di:waypoint x="722" y="1153" />
+        <di:waypoint x="887" y="1153" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="764" y="1131" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dvxh1a_di" bpmnElement="SequenceFlow_0dvxh1a">
+        <di:waypoint x="937" y="1113" />
+        <di:waypoint x="937" y="1030" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_02scklj_di" bpmnElement="SequenceFlow_02scklj">
+        <di:waypoint x="504" y="990" />
+        <di:waypoint x="887" y="990" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_01s6iru_di" bpmnElement="SequenceFlow_01s6iru">
+        <di:waypoint x="813" y="939" />
+        <di:waypoint x="813" y="990" />
+        <di:waypoint x="887" y="990" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_14ryhvf_di" bpmnElement="SequenceFlow_14ryhvf">
+        <di:waypoint x="813" y="675" />
+        <di:waypoint x="813" y="624" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_08gmgbn_di" bpmnElement="SequenceFlow_08gmgbn">
+        <di:waypoint x="763" y="584" />
+        <di:waypoint x="714" y="584" />
+        <di:waypoint x="714" y="693" />
+        <di:waypoint x="664" y="693" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ncdq3q_di" bpmnElement="SequenceFlow_1ncdq3q">
+        <di:waypoint x="218" y="780" />
+        <di:waypoint x="218" y="745" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1dp164f_di" bpmnElement="SequenceFlow_1dp164f">
+        <di:waypoint x="218" y="665" />
+        <di:waypoint x="218" y="624" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
