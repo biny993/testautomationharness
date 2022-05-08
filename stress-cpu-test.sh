@@ -101,8 +101,11 @@ function asserted()
         source /etc/platform/openrc
         # fm alarm-list | grep "host=${hostname}" | grep "Platform CPU threshold exceeded"
         # fm alarm-list output format is affected by stty column width, which is 80 by default
-        stty cols 120
-        fm alarm-list | grep "100.101"
+        # stty cols 120
+        # fm alarm-list | grep "100.101"
+        # Note: stty cols will fail in paramiko exec_command() (or pty), just ignore it
+        stty cols 80
+        fm alarm-list | grep -A 1  ^"| 100." | grep -B 1 ^"| 101"
         if [ "$?" == 0 ]; then
             echo "status:pass"
         else
